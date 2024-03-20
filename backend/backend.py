@@ -59,7 +59,7 @@ def get_recipes():
     page_size = request.args.get('page_size', type=int)
     skip = (page_number - 1) * page_size
     skip = max(skip, 0)
-    recipes = list(recipes_collection.find().skip(skip).limit(page_size))  # Retrieve all recipes from the collection
+    recipes = list(recipes_collection.find({"skip": skip, "limit": page_number}))  # Retrieve all recipes from the collection
     return jsonify({'recipes': recipes})
 
 # Add a new recipe to database
