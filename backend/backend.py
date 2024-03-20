@@ -53,10 +53,13 @@ def login():
     return jsonify({'token': token}), 200
 
 # Get recipe data
-# Todo - paginate
 @app.route('/recipes', methods=['GET'])
 def get_recipes():
-    recipes = list(recipes_collection.find({}))  # Retrieve all recipes from the collection
+    page_number = request.args.get('page', type=int)
+    page_size = request.args.get('page_size', type=int)
+    skip = (page_number - 1) * page_size
+    skip = max(skip, 0)
+    recipes = list(recipes_collection.find().skip(skip).limit(page_size))  # Retrieve all recipes from the collection
     return jsonify({'recipes': recipes})
 
 # Add a new recipe to database
@@ -64,7 +67,6 @@ def get_recipes():
 @token_required
 def create_recipe():
     data = request.json
-    print(data)
     new_recipe = {
         'title': data['title'],
         'user_id': data['user_id'],
