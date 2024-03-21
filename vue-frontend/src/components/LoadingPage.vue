@@ -1,8 +1,14 @@
 <template>
-  <v-sheet class="d-flex flex-row mb-6 bg-surface-variant flex-nowrap justify-space-around">
+  <v-sheet class="d-flex flex-row mt-16 mb-6 bg-surface-variant flex-nowrap justify-space-around">
     <v-sheet class="d-flex flex-column justify-center align-center">
       <v-sheet class="rotating-image square-container ma-2 pa-2 d-flex flex-column justify-center align-center align-self-center">
         <img src="../assets/sade.png" alt="Rotating Image" class="rotate">
+      </v-sheet>
+      <v-sheet class="ma-2 pa-2">Clothing</v-sheet>
+    </v-sheet>
+    <v-sheet class="d-flex flex-column justify-center align-center">
+      <v-sheet class="rotating-image square-container ma-2 pa-2 d-flex flex-column justify-center align-center">
+        <img src="../assets/sade.png" alt="Rotating Image" class="">
       </v-sheet>
       <v-sheet class="ma-2 pa-2">Music</v-sheet>
     </v-sheet>
@@ -10,20 +16,14 @@
       <v-sheet class="rotating-image square-container ma-2 pa-2 d-flex flex-column justify-center align-center">
         <img src="../assets/sade.png" alt="Rotating Image" class="">
       </v-sheet>
-      <v-sheet class="ma-2 pa-2">Food/Recipes</v-sheet>
-    </v-sheet>
-    <v-sheet class="d-flex flex-column justify-center align-center">
-      <v-sheet class="rotating-image square-container ma-2 pa-2 d-flex flex-column justify-center align-center">
-        <img src="../assets/sade.png" alt="Rotating Image" class="">
-      </v-sheet>
-      <v-sheet class="ma-2 pa-2">Inspiration</v-sheet>
+      <v-sheet class="ma-2 pa-2">Food</v-sheet>
     </v-sheet>
   </v-sheet>
 </template>
   
   <script>
   export default {
-    name: 'RotatingImage'
+    name: 'LoadingPage'
   }
   </script>
   
@@ -54,13 +54,6 @@
     width: 100%; /* Make the image fill the container horizontally */
     height: auto; /* Allow the height to adjust proportionally */
     display: block;
-  }
-
-  /* Set the aspect ratio of the container */
-  .square-container::before {
-    content: "";
-    display: block;
-    /* padding-top: 100%; This creates a square aspect ratio (1:1) */
   }
   </style>
   

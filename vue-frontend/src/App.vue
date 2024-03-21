@@ -1,9 +1,13 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import TopHeader from './components/TopHeader.vue'
 </script>
 
 <template>
+  <v-app>
+    <TopHeader/>
     <RouterView />
+</v-app>
 </template>
 
 <style scoped>
