@@ -14,3 +14,12 @@ GET /recipes
 POST /recipes
 
 Frontend
+
+How to run frontend
+
+cd vue-frontend
+
+npm install
+
+npm run dev
+
