@@ -1,4 +1,5 @@
 import './assets/main.css'
+import globalMixin from './globalMixin.js'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -14,4 +15,4 @@ const vuetify = createVuetify({
   directives,
 })
 
-createApp(App).use(router).use(vuetify).mount('#app')
+createApp(App).use(router).use(vuetify).mixin(globalMixin).mount('#app')

@@ -1,19 +1,19 @@
 <template>
     <div class="d-flex flex-wrap justify-space-between container">
       <v-sheet class="ma-2 pa-2">
-        <div class="square-container">
+        <div class="square-container cursor-pointer" @click="redirect('/shop')">
           <img src="../assets/vintage_supreme.jpeg" alt="Rotating Image" class="circular-image">
-          <div style="text-align: center; padding: 5px">Creativity</div>
+          <div style="text-align: center; padding: 5px">Clothes</div>
         </div>
       </v-sheet>
       <v-sheet class="ma-2 pa-2">
-        <div class="square-container">
+        <div class="square-container cursor-pointer" @click="redirect('/music')">
           <img src="../assets/sade.png" alt="Rotating Image" class="rotate circular-image">
           <div style="text-align: center; padding: 5px">Music</div>
         </div>
       </v-sheet>
       <v-sheet class="ma-2 pa-2">
-        <div class="square-container">
+        <div class="square-container cursor-pointer" @click="redirect('/recipe')">
           <img src="../assets/pan.png" alt="Rotating Image" class="circular-image">
           <div style="text-align: center; padding: 5px;">Recipes</div>
         </div>
@@ -59,10 +59,6 @@ export default {
   height: auto;
   /* Allow the height to adjust proportionally */
   display: block;
-}
-
-.container {
-  padding-top: 15%;
 }
 
 .circular-image {

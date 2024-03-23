@@ -84,3 +84,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.container {
+  padding-top: 15%;
+}
+
+/* @font-face {
+  font-family: 'Rubik Mono One';
+  font-style: "normal";
+  src: url('./fonts/RubikMonoOne-Regular.ttf') format('ttf');
+} */
+
+.header-font {
+  font-family: 'Rubik Mono One', monospace !important;
+}
