@@ -1,5 +1,6 @@
 <script setup>
 import YearDivider from './YearDivider.vue'
+import PhotosComponent from './PhotosComponent.vue'
 </script>
 
 <template>
@@ -18,13 +19,45 @@ import YearDivider from './YearDivider.vue'
       </p>
     </div>
     <YearDivider year="2022"/>
-
+    <PhotosComponent year="2022" :months="dict2022.months" :captions="dict2022.captions"/>
     <YearDivider year="2023"/>
+    <PhotosComponent year="2023" :months="dict2023.months" :captions="dict2023.captions"/>
+    <YearDivider year="2024"/>
+    <PhotosComponent year="2024" :months="dict2024.months" :captions="dict2024.captions"/>
 </template>
   
 <script>
   export default {
     name: 'AboutPage',
+    components: {
+      PhotosComponent,
+      YearDivider
+    },
+    data() {
+      return {
+        years: [
+          '2022', '2023', '2024'
+        ],
+        dict2022: {
+          months: [
+            'april', 'may', 'june', 'july', 'aug', 'sept', 'oct', 'nov', 'dec'
+          ],
+          captions: [
+            'test'
+          ]
+        },
+        dict2023: {
+          months: [
+            'jan', 'feb', 'march', 'april', 'may', 'june', 'july', 'aug', 'sept', 'oct', 'nov', 'dec'
+          ],
+        },
+        dict2024: {
+          months: [
+            'jan', 'feb', 'march'
+          ],
+        }
+      };
+    },
   }
 </script>
   
