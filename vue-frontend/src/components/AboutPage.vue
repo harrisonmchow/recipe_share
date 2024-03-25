@@ -15,7 +15,7 @@ import PhotosComponent from './PhotosComponent.vue'
       </p>
       <br/>
       <p>
-        Below are some of my favourite memories since we've started dating. Let's take a trip down memory lane.
+        Below are some of my favourite memories from each month since we've started dating. Let's take a trip down memory lane.
       </p>
     </div>
     <YearDivider year="2022"/>
@@ -24,6 +24,12 @@ import PhotosComponent from './PhotosComponent.vue'
     <PhotosComponent year="2023" :months="dict2023.months" :captions="dict2023.captions"/>
     <YearDivider year="2024"/>
     <PhotosComponent year="2024" :months="dict2024.months" :captions="dict2024.captions"/>
+    <div class="text-container">
+      <p>Happy Anniversary</p>
+      <br/>
+      <p>With all my love,</p>
+      <p><strong>H.</strong></p>
+    </div>
 </template>
   
 <script>
@@ -43,18 +49,27 @@ import PhotosComponent from './PhotosComponent.vue'
             'april', 'may', 'june', 'july', 'aug', 'sept', 'oct', 'nov', 'dec'
           ],
           captions: [
-            'test'
+            'First date as an official couple', 'Started my love for flowers', 'Self explanatory - very funny night', 'Exeter!', 'Our first formal event',
+            'Blue Bay with Meow', 'Cute day out with my gals', 'Balls of Happiness!', 'Cheeky surprise party'
           ]
         },
         dict2023: {
           months: [
             'jan', 'feb', 'march', 'april', 'may', 'june', 'july', 'aug', 'sept', 'oct', 'nov', 'dec'
           ],
+          captions: [
+            'Picasso, I like it', 'The birth of our son', 'Mother and son', 'Tying the knot, together 4ever', 'Slow mornings with my two darlings',
+            'Cute date at Golden Age', 'Last dinner before you left for Europe - best skewers ever', 'Cougar alert', 'Best sushi ever!!',
+            'LeFoote, so good - pregame @ Maybe Sammy\'s as well', 'Run and swims @ Freshie', 'Hard to choose a single photo, literally the best time of my life'
+          ]
         },
         dict2024: {
           months: [
             'jan', 'feb', 'march'
           ],
+          captions: [
+            'Hiking core', 'First dinner back from Vietnam', 'So many gorgeous sunrises and sunsets with you'
+          ]
         }
       };
     },
@@ -82,7 +97,6 @@ import PhotosComponent from './PhotosComponent.vue'
   }
 
   .text-container {
-    /* background-color: blue; */
     padding: 25px 0px;
     margin: 0px 5%;
   }
