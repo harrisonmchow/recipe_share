@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar :elevation="3">
+  <v-app-bar :elevation="3" scroll-behavior="hide" scroll-threshold="171">
     <v-toolbar-title>
       <v-btn class="header-font" plain @click="redirect('/')">{{ displayedTitle }}</v-btn>
     </v-toolbar-title>

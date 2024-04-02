@@ -90,11 +90,12 @@ body {
   padding-top: 15%;
 }
 
-/* @font-face {
-  font-family: 'Rubik Mono One';
-  font-style: "normal";
-  src: url('./fonts/RubikMonoOne-Regular.ttf') format('ttf');
-} */
+.content-container {
+  padding-top: 4%;
+  min-height: 100vh;
+  /* background-color: blue; */
+}
+
 
 .header-font {
   font-family: 'Rubik Mono One', monospace !important;

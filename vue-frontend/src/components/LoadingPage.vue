@@ -13,7 +13,7 @@
         </div>
       </v-sheet>
       <v-sheet class="ma-2 pa-2">
-        <div class="square-container cursor-pointer" @click="redirect('/recipe')">
+        <div class="square-container cursor-pointer" @click="redirect('/recipes')">
           <img src="../assets/pan.png" alt="Rotating Image" class="circular-image">
           <div style="text-align: center; padding: 5px;">Recipes</div>
         </div>
