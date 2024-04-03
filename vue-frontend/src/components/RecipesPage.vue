@@ -1,8 +1,16 @@
 <script setup>
   import { ref } from 'vue'
 
+  import recipesData from './sampleData/RecipeData';
+
   const variants = ['elevated', 'flat', 'elevated', 'elevated', 'elevated']
   const color = ref('indigo')
+
+  const difficultyToColour = {
+    Easy: "#77DD77",
+    Intermediate: "#FDFD96",
+    Hard: "#FF6961"
+  }
 
   const filters = ['difficulty', 'cuisine', 'our favourites']
 </script>
@@ -20,32 +28,36 @@
     <v-container class="recipe-card-container">
       <v-row align="center" justify="start">
       <v-col
-        v-for="(variant, i) in variants"
+        v-for="(recipe, i) in recipesData"
         :key="i"
         cols="4"
       >
         <v-card
-          :color="color"
-          :variant="variant"
+          :color="difficultyToColour[recipe.difficulty]"
+          variant="elevated"
           class="mx-auto"
+          @click="redirectToRecipe(recipe.id)"
         >
           <v-card-item>
             <div>
-              <div class="text-overline mb-1">
-                {{ variant }}
-              </div>
               <div class="text-h6 mb-1">
-                Headline
+                {{ recipe.title }}
               </div>
-              <div class="text-caption">Greyhound divisely hello coldly fonwderfully</div>
+              <div class="text-caption">{{ recipe.description }}</div>
+              <div class="text-overline mb-1">
+                {{ recipe.time }} minutes
+              </div>
+              <div class="text-overline mb-1">
+                {{ recipe.cuisine }}
+              </div>
             </div>
           </v-card-item>
 
-          <v-card-actions>
+          <!-- <v-card-actions>
             <v-btn>
-              Button
+              More
             </v-btn>
-          </v-card-actions>
+          </v-card-actions> -->
         </v-card>
       </v-col>
     </v-row>
@@ -55,7 +67,13 @@
 
 <script>
 export default {
-  name: 'RecipePage'
+  name: 'RecipePage',
+  methods: {
+    redirectToRecipe(id) {
+      console.log(id);
+      console.log(`going to ${id}'s page'`);
+    }
+  }
 }
 </script>
 
