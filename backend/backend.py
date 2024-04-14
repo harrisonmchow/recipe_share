@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import jwt
 import datetime
 import hashlib
-from flask_cors import CORS
+from flask_cors import CORS # type: ignore
 
 app = Flask(__name__)
 CORS(app)
