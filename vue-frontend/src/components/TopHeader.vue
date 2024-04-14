@@ -1,3 +1,7 @@
+<script setup>
+import axios from 'axios';
+</script>
+
 <template>
   <v-app-bar :elevation="3" scroll-behavior="hide" scroll-threshold="171">
     <v-toolbar-title>
@@ -6,7 +10,8 @@
     <v-spacer></v-spacer>
     <v-btn text @click="redirect('/board')">Inspiration Board</v-btn>
     <v-btn text @click="redirect('/about')">About</v-btn>
-    <v-btn text @click="redirect('/login')">Login</v-btn>
+    <v-btn text v-if="!hasToken" @click="redirect('/login')">Login</v-btn>
+    <v-btn text v-if="hasToken" @click="removeToken()">Logout</v-btn>
   </v-app-bar>
 </template>
 
@@ -17,7 +22,8 @@ export default {
     return {
       title: 'Sauce, Sound & Sizzle',
       shortTitle: 'SS&S',
-      screenWidth: window.innerWidth
+      screenWidth: window.innerWidth,
+      hasToken: false
     };
   },
   computed: {
@@ -35,19 +41,61 @@ export default {
   mounted() {
     // Listen for window resize events
     window.addEventListener('resize', this.handleResize);
+    cookieStore.addEventListener("change", this.checkForToken);
   },
   beforeUnmount() {
     // Remove window resize event listener when component is unmounted
     window.removeEventListener('resize', this.handleResize);
+    cookieStore.addEventListener("change", this.checkForToken);
   },
   methods: {
     // Method to update the screenWidth data property when window is resized
     handleResize() {
       this.screenWidth = window.innerWidth;
+    },
+    async checkForToken() {
+      const token = this.getCookie('sss_token');
+      if (!token) {
+        this.hasToken = false;
+        return;
+      }
+      console.log("Checking token");
+      const db_host = import.meta.env.VITE_DB_HOST;
+      try {
+        const response = await axios.post(
+          `${db_host}/validate_token`,
+          {
+            token: token
+          },
+          {
+            headers: {
+              "Content-type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+        this.hasToken = response.data.valid;
+      } catch (err) {
+        console.log(err);
+        this.hasToken = false;
+      }
+
+    },
+    getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].split('=');
+        if (cookie[0] === name) {
+          return decodeURIComponent(cookie[1]);
+        }
+      }
+      return null;
+    },
+    removeToken() {
+      document.cookie = `sss_token=;`;
     }
   }
 }
 </script>
 
-<style>
-</style>
+<style></style>

@@ -3,6 +3,7 @@ import LoadingView from '../views/LoadingView.vue'
 import AboutView from '../views/AboutView.vue'
 import LoginView from '../views/LoginView.vue'
 import RecipesView from '../views/RecipesView.vue'
+import NotFoundView from '../views/404View.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,9 @@ const router = createRouter({
       path: '/recipes',
       name: 'recipes',
       component: RecipesView
+    }, {
+      path: '/:pathMatch(.*)*',
+      component: NotFoundView
     }
   ]
 })

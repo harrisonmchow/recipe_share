@@ -2,9 +2,12 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import jwt
 import datetime
-
+import hashlib
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
 app.config['SECRET_KEY'] = 'BabyCakes123'
 connection_string = "mongodb+srv://recipeAdmin:8YyKQeylo6z3lnH8@recipe-database.e0pj4aj.mongodb.net/?retryWrites=true&w=majority&appName=recipe-database"
 client = MongoClient(connection_string)  # Connect to MongoDB (adjust URI as needed)
@@ -12,6 +15,7 @@ db = client['recipe_database']  # Connect to your MongoDB database
 
 # Define your MongoDB collection
 recipes_collection = db['recipes']
+users_collection = db['users']
 
 def token_required(f):
     def decorated_function(*args, **kwargs):
@@ -40,17 +44,46 @@ def login():
 
     username = auth['username']
     password = auth['password']
+    # Create a SHA-256 hash object, convert the password to bytes and hash it
+    hash_object = hashlib.sha256()
+    hash_object.update(password.encode())
+    hash_password = hash_object.hexdigest()
 
     # check mongoDB database
-    # if username not in users or users[username] != password:
-    #     return jsonify({'message': 'Invalid credentials'}), 401
+    user_document = users_collection.find_one({'username': username})
+    if not user_document or user_document['password'] != hash_password:
+        print(f"Invalid user {username}")
+        return jsonify({'message': 'Invalid credentials'}), 401
 
     # Generate JWT token
     token = jwt.encode({
         'username': username,
         'exp': datetime.datetime.now() + datetime.timedelta(minutes=30)  # Token expiration time
     }, app.config['SECRET_KEY'])
+    print(f"Successful user login for {username}")
     return jsonify({'token': token}), 200
+
+### Validate token
+@app.route('/validate_token', methods=['POST'])
+def validate_token():
+    token = request.json.get('token')
+    if token_is_valid(token):
+        return jsonify({'valid': True}), 200
+    else:
+        return jsonify({'valid': False}), 200
+
+def token_is_valid(token):
+    if not token:
+        return False
+    try:    
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        print(data['exp'])
+        print(datetime.datetime.now())
+        if datetime.datetime.fromtimestamp(data['exp']) < datetime.datetime.now():
+            return False
+        return True
+    except:
+        return False
 
 # Get recipe data
 @app.route('/recipes', methods=['GET'])

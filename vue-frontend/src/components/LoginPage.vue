@@ -1,3 +1,8 @@
+<script setup>
+import axios from 'axios';
+import globalMixin from '../globalMixin.js';
+</script>
+
 <template>
   <div class="content-container centre">
     <v-container class="mb-6" style="width: 60%;">
@@ -24,6 +29,8 @@
 
 <script>
 export default {
+  name: "loginPage",
+  mixins: [globalMixin],
   data() {
     return {
       username: '',
@@ -38,16 +45,39 @@ export default {
     };
   },
   methods: {
-    login() {
+    async login() {
       if (this.username === '') return;
       if (this.password === '') return;
-      // console.log(`username is ${this.username}`);
-      // console.log(`password is ${this.password}`);
-      console.log('Making backend POST request...');
-      if (this.username === 'test' && this.password === 'test') {
-        this.snackbarMessage = 'Login Success';
-        this.snackbarColor = 'green';
-      } else {
+      const db_host = import.meta.env.VITE_DB_HOST;
+      console.log(`Sending request to ${db_host}`);
+      try {
+        const response = await axios.post(
+          `${db_host}/login`, 
+          {
+            username: this.username,
+            password: this.password,
+          }, 
+          {
+            headers: {
+              "Content-type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            }
+          }
+        );
+        if (response.statusText === "OK") {
+          this.snackbarMessage = 'Login Success';
+          this.snackbarColor = 'green';
+          // Set token in localStorage
+          const token = response.data.token;
+          console.log(token);
+          document.cookie = `sss_token=${token}`;
+          this.redirect('/');
+        } else {
+          this.snackbarMessage = 'Login failed';
+          this.snackbarColor = 'red';
+        }
+      } catch (err) {
+        console.log(err); // Handle any errors
         this.snackbarMessage = 'Login failed';
         this.snackbarColor = 'red';
       }
