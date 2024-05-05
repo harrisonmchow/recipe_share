@@ -27,6 +27,13 @@
     </div>
     <v-container class="recipe-card-container">
       <v-row align="center" justify="start">
+        <v-col>
+          <v-btn @click="redirect('/recipes/new')">
+            Add a new recipe
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row align="center" justify="start">
       <v-col
         v-for="(recipe, i) in recipesData"
         :key="i"
@@ -52,12 +59,6 @@
               </div>
             </div>
           </v-card-item>
-
-          <!-- <v-card-actions>
-            <v-btn>
-              More
-            </v-btn>
-          </v-card-actions> -->
         </v-card>
       </v-col>
     </v-row>

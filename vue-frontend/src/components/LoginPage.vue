@@ -21,9 +21,6 @@ import globalMixin from '../globalMixin.js';
         </v-col>
       </v-row>
     </v-container>
-    <v-snackbar :color="snackbarColor" v-model="snackbar" :timeout="timeout">
-      {{ snackbarMessage }}
-    </v-snackbar>
   </div>
 </template>
 
@@ -35,10 +32,6 @@ export default {
     return {
       username: '',
       password: '',
-      snackbar: false,
-      snackbarMessage: '',
-      snackbarColor: '', // Dynamically set based on the variable
-      timeout: 3000, // Snackbar display duration
       rules: {
         required: value => !!value || 'Required.'
       }
@@ -60,29 +53,23 @@ export default {
           {
             headers: {
               "Content-type": "application/json",
-              "Access-Control-Allow-Origin": "*"
             }
           }
         );
         if (response.statusText === "OK") {
-          this.snackbarMessage = 'Login Success';
-          this.snackbarColor = 'green';
+          this.$root.snackbar.display(true, 'Login Success');
           // Set token in localStorage
           const token = response.data.token;
           console.log(token);
           document.cookie = `sss_token=${token}`;
           this.redirect('/');
         } else {
-          this.snackbarMessage = 'Login failed';
-          this.snackbarColor = 'red';
+          this.$root.snackbar.display(false, 'Login failed');
         }
       } catch (err) {
         console.log(err); // Handle any errors
-        this.snackbarMessage = 'Login failed';
-        this.snackbarColor = 'red';
+        this.$root.snackbar.display(false, 'Login failed');
       }
-      this.snackbar = true;
-
     }
   }
 };

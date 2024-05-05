@@ -4,6 +4,9 @@ import jwt
 import datetime
 import hashlib
 from flask_cors import CORS # type: ignore
+import requests
+import os
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -16,6 +19,8 @@ db = client['recipe_database']  # Connect to your MongoDB database
 # Define your MongoDB collection
 recipes_collection = db['recipes']
 users_collection = db['users']
+
+curr_spotify_token = ""
 
 def token_required(f):
     def decorated_function(*args, **kwargs):
@@ -117,6 +122,57 @@ def create_recipe():
     recipes_collection.insert_one(new_recipe)  # Insert the new recipe document into the collection
     return jsonify({'message': 'Recipe created successfully'}), 201
 
+# Callback function for spotify
+@app.route('/callback', methods=['GET'])
+def callback():
+    code = request.args.get('code', type=str)
+    state = request.args.get('state', type=str)
+    return jsonify({'code': code, 'state': state}), 200
+
+# Refresh function
+def refresh_token():
+    url = "https://accounts.spotify.com/api/token"
+    client_id = os.environ.get('SPOTIFY_CLIENT_ID')
+    refresh_token = os.environ.get('SPOTIFY_REFRESH_TOKEN')
+    payload = f'grant_type=refresh_token&refresh_token={refresh_token}&client_id={client_id}'
+    text = f"{client_id}:{os.environ.get('SPOTIFY_CLIENT_SECRET')}"
+    basic_authorization = base64.b64encode(text.encode('utf-8'))
+    headers = {
+    'Authorization': f'Basic {basic_authorization.decode('utf-8')}',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    
+    track_response = requests.post(url, headers=headers, data=payload)
+    data = track_response.json()
+    return data['access_token']
+
+
+@app.route('/spotify_stats', methods=['GET'])
+def get_spotify_stats():
+    # Get track data
+    global curr_spotify_token;
+    url = "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=5"
+    headers = {
+    'Authorization': f'Bearer {curr_spotify_token}',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    track_response = requests.get(url, headers=headers)
+    if (track_response.status_code == 200):
+        data = track_response.json()
+    else:
+        curr_spotify_token = refresh_token();
+        headers = {
+            'Authorization': f'Bearer {curr_spotify_token}',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+        track_response = requests.get(url, headers=headers)
+        data = track_response.json()
+    
+    # Get Artist data
+    url = "https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=5"
+    artist_response = requests.get(url, headers=headers)
+    artist_data = artist_response.json()
+    return jsonify({"track_data": data, "artist_data": artist_data}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

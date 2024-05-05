@@ -1,14 +1,28 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import TopHeader from './components/TopHeader.vue'
+import SnackBarComponent from './components/SnackbarComponent.vue'
 </script>
 
 <template>
   <v-app>
-    <TopHeader/>
+    <TopHeader />
     <RouterView />
-</v-app>
+    <SnackBarComponent ref="snackbar" />
+  </v-app>
 </template>
+
+<script>
+export default {
+  name: 'App',
+  components: {
+    SnackBarComponent
+  },
+  mounted() {
+    this.$root.snackbar = this.$refs.snackbar
+  },
+}
+</script>
 
 <style scoped>
 header {
