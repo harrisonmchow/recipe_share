@@ -21,9 +21,7 @@
       Recipes
     </div>
     <div class="subtext">
-      Coming from recipe books, Tiktok, or simply improvisations, here are some of our favourite recipes we've cooked up for ourselves. Browse by cuisine, difficulty, or simply by our favourites. 
-      <br/>
-      Enjoy!
+      Coming from recipe books, Tiktok, or simply improvisations, here are some of our favourite recipes we've cooked up for ourselves. Browse by cuisine, difficulty, or simply by our favourites. Enjoy!
     </div>
     <v-container class="recipe-card-container">
       <v-row align="center" justify="start">

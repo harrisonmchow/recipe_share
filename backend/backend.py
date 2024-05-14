@@ -101,23 +101,24 @@ def get_recipes():
     return jsonify({'recipes': recipes})
 
 # Add a new recipe to database
-@app.route('/recipes', methods=['POST'])
+@app.route('/recipe', methods=['POST'])
 @token_required
 def create_recipe():
     data = request.json
     new_recipe = {
         'title': data['title'],
-        'user_id': data['user_id'],
-        'date_posted': data['date_posted'],
+        # 'user_id': data['user_id'],
+        'date_posted': datetime.datetime.now(),
         'description': data['description'],
         'difficulty': data['difficulty'],
         'cuisine': data['cuisine'],
         'ingredients': data['ingredients'],
         'instructions': data['instructions'],
-        'tags': data['tags'],
-        'footnotes': data['footnotes'],
-        'likes': data['likes'],
-        'photos': data['photos']
+        # 'tags': data['tags'],
+        'notes': data['notes'],
+        'link': data['link'],
+        # 'likes': data['likes'],
+        # 'photos': data['photos']
     }
     recipes_collection.insert_one(new_recipe)  # Insert the new recipe document into the collection
     return jsonify({'message': 'Recipe created successfully'}), 201

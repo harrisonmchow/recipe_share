@@ -42,6 +42,7 @@ export default {
   mounted() {
     // Listen for window resize events
     window.addEventListener('resize', this.handleResize);
+    this.checkForToken();
     cookieStore.addEventListener("change", this.checkForToken);
   },
   beforeUnmount() {
