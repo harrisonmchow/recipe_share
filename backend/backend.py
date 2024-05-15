@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
+from bson import ObjectId, json_util
+import json
 import jwt
 import datetime
 import hashlib
@@ -93,12 +95,18 @@ def token_is_valid(token):
 # Get recipe data
 @app.route('/recipes', methods=['GET'])
 def get_recipes():
-    page_number = request.args.get('page', type=int)
-    page_size = request.args.get('page_size', type=int)
-    skip = (page_number - 1) * page_size
-    skip = max(skip, 0)
-    recipes = list(recipes_collection.find({"skip": skip, "limit": page_number}))  # Retrieve all recipes from the collection
-    return jsonify({'recipes': recipes})
+    id = request.args.get('id', type=str)
+    if not id:
+        recipes = list(recipes_collection.find())
+        return json.loads(json_util.dumps(recipes))
+    else:
+        object_id = ObjectId(id)
+        recipe = recipes_collection.find_one({'_id': object_id})
+        if recipe is None:
+            errorStr = f'Recipe with _id: {id} not found'
+            return jsonify({'Error': errorStr}), 404
+        else:
+            return json.loads(json_util.dumps(recipe))
 
 # Add a new recipe to database
 @app.route('/recipe', methods=['POST'])
@@ -108,7 +116,7 @@ def create_recipe():
     new_recipe = {
         'title': data['title'],
         # 'user_id': data['user_id'],
-        'date_posted': datetime.datetime.now(),
+        'date_posted': datetime.datetime.now().isoformat(),
         'description': data['description'],
         'difficulty': data['difficulty'],
         'cuisine': data['cuisine'],

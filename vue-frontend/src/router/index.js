@@ -3,6 +3,7 @@ import LoadingView from '../views/LoadingView.vue'
 import AboutView from '../views/AboutView.vue'
 import LoginView from '../views/LoginView.vue'
 import RecipesView from '../views/RecipesView.vue'
+import RecipeView from '../views/RecipeView.vue'
 import NotFoundView from '../views/404View.vue'
 import NewRecipeView from '@/views/NewRecipeView.vue'
 import MusicView from '@/views/MusicView.vue'
@@ -29,6 +30,12 @@ const router = createRouter({
       path: '/recipes',
       name: 'recipes',
       component: RecipesView
+    },
+    {
+      path: '/recipe',
+      name: 'recipe',
+      component: RecipeView,
+      props: true
     },
     {
       path: '/recipes/new',
