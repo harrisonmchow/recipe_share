@@ -1,10 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import globalMixin from '../globalMixin.js';
 import axios from 'axios';
 import recipesData from './sampleData/RecipeData';
-
-const variants = ['elevated', 'flat', 'elevated', 'elevated', 'elevated']
-const color = ref('indigo')
 
 const difficultyToColour = {
   Beginner: "#7EB356",
@@ -22,12 +19,12 @@ const filters = ['difficulty', 'cuisine', 'our favourites']
     </div>
     <div class="subtext">
       Coming from recipe books, Tiktok, or simply improvisations, here are some of our favourite recipes we've cooked up
-      for ourselves. Browse by cuisine, difficulty, or simply by our favourites. Enjoy!
+      for ourselves. Enjoy!
     </div>
     <v-container class="recipe-card-container">
       <v-row align="center" justify="start">
         <v-col>
-          <v-btn @click="redirect('/recipes/new')">
+          <v-btn v-if="this.hasToken === true" @click="redirect('/recipes/new')">
             Add a new recipe
           </v-btn>
         </v-col>
@@ -44,7 +41,7 @@ const filters = ['difficulty', 'cuisine', 'our favourites']
                 <div class="mb-1">
                   Total Time: {{ formatTime(recipe.time) }}
                 </div>
-                <div class="text-caption">{{ recipe.description }}</div>
+                <!-- <div class="text-caption">{{ recipe.description }}</div> -->
                 <div class="text-overline mb-1">
                   {{ recipe.cuisine }}
                 </div>
@@ -69,16 +66,18 @@ export default {
       filteredData: [],
       paginatedData: [],
       page: 1,
-      page_size: 25
+      page_size: 25,
+      hasToken: false
     }
   },
+  mixins: [globalMixin],
   mounted() {
     this.getRecipeData();
+    this.checkForToken();
   },
   methods: {
     redirectToRecipe(id) {
-      console.log(id);
-      console.log(`going to ${id}'s page'`);
+      this.redirect(`/recipe?id=${id}`);
     },
     async getRecipeData() {
       try {
@@ -103,7 +102,7 @@ export default {
       const remainingMinutes = minutes % 60;
       return `${hours} hr ${remainingMinutes} min`;
     }
-  }
+  }, 
 }
 </script>
 
