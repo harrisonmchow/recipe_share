@@ -22,7 +22,9 @@ db = client['recipe_database']  # Connect to your MongoDB database
 recipes_collection = db['recipes']
 users_collection = db['users']
 
-curr_spotify_token = ""
+curr_spotify_token_harry = ""
+curr_spotify_token_katie = ""
+
 
 def token_required(f):
     def decorated_function(*args, **kwargs):
@@ -139,10 +141,13 @@ def callback():
     return jsonify({'code': code, 'state': state}), 200
 
 # Refresh function
-def refresh_token():
+def refresh_token(isHarry):
     url = "https://accounts.spotify.com/api/token"
     client_id = os.environ.get('SPOTIFY_CLIENT_ID')
-    refresh_token = os.environ.get('SPOTIFY_REFRESH_TOKEN')
+    if (isHarry is True):
+        refresh_token = os.environ.get('SPOTIFY_REFRESH_TOKEN_HARRY')
+    else:
+        refresh_token = os.environ.get('SPOTIFY_REFRESH_TOKEN_KATIE')
     payload = f'grant_type=refresh_token&refresh_token={refresh_token}&client_id={client_id}'
     text = f"{client_id}:{os.environ.get('SPOTIFY_CLIENT_SECRET')}"
     basic_authorization = base64.b64encode(text.encode('utf-8'))
@@ -158,30 +163,54 @@ def refresh_token():
 
 @app.route('/spotify_stats', methods=['GET'])
 def get_spotify_stats():
-    # Get track data
-    global curr_spotify_token;
+    # Get track data for Harry
+    global curr_spotify_token_harry;
     url = "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=5"
     headers = {
-    'Authorization': f'Bearer {curr_spotify_token}',
+    'Authorization': f'Bearer {curr_spotify_token_harry}',
     'Content-Type': 'application/x-www-form-urlencoded',
     }
     track_response = requests.get(url, headers=headers)
     if (track_response.status_code == 200):
-        data = track_response.json()
+        track_data_harry = track_response.json()
     else:
-        curr_spotify_token = refresh_token();
+        curr_spotify_token_harry = refresh_token(True);
         headers = {
-            'Authorization': f'Bearer {curr_spotify_token}',
+            'Authorization': f'Bearer {curr_spotify_token_harry}',
             'Content-Type': 'application/x-www-form-urlencoded',
         }
         track_response = requests.get(url, headers=headers)
-        data = track_response.json()
+        track_data_harry = track_response.json()
     
+    # Get Artist data for harry
+    url = "https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=5"
+    artist_response = requests.get(url, headers=headers)
+    artist_data_harry = artist_response.json()
+    
+    # Get track data for Katie
+    global curr_spotify_token_katie;
+    url = "https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=5"
+    headers = {
+    'Authorization': f'Bearer {curr_spotify_token_katie}',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    track_response = requests.get(url, headers=headers)
+    if (track_response.status_code == 200):
+        track_data_katie = track_response.json()
+    else:
+        curr_spotify_token_katie = refresh_token(False);
+        headers = {
+            'Authorization': f'Bearer {curr_spotify_token_katie}',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+        track_response = requests.get(url, headers=headers)
+        track_data_katie = track_response.json()
     # Get Artist data
     url = "https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=5"
     artist_response = requests.get(url, headers=headers)
-    artist_data = artist_response.json()
-    return jsonify({"track_data": data, "artist_data": artist_data}), 200
+    artist_data_katie = artist_response.json()
+    return jsonify({"harry": {"track_data": track_data_harry, "artist_data": artist_data_harry},
+                    "katie": {"track_data": track_data_katie, "artist_data": artist_data_katie}}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

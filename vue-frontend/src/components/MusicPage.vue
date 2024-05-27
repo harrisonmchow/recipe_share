@@ -5,6 +5,15 @@ const superfanInvite = import.meta.env.VITE_SUPERFAN_INVITE
 
 <template>
     <div class="content-container">
+        <v-dialog v-model="loading" width="auto">
+            <v-card max-width="400" prepend-icon="mdi-update"
+                text="Please sit tight whilst we load in our spotify statistics" title="Fetching Spotify Data">
+                <v-progress-circular color="primary" indeterminate style="margin: auto;"></v-progress-circular>
+                <template v-slot:actions>
+                    <v-btn class="ms-auto" text="Ok" @click="loading = false"></v-btn>
+                </template>
+            </v-card>
+        </v-dialog>
         <div class="recipes-header header-font">
             Music
         </div>
@@ -13,7 +22,8 @@ const superfanInvite = import.meta.env.VITE_SUPERFAN_INVITE
             <!-- <v-icon @click="() => openLink(superfanInvite)" icon="mdi-open-in-new" size="large"></v-icon> -->
             <v-tooltip v-model="showTooltip" location="top">
                 <template v-slot:activator="{ props }">
-                    <v-icon @click="() => openLink(superfanInvite)" icon="mdi-open-in-new" size="large" v-bind="props"></v-icon>
+                    <v-icon @click="() => openLink(superfanInvite)" icon="mdi-open-in-new" size="large"
+                        v-bind="props"></v-icon>
                 </template>
                 <span>Click to join our superfan group!</span>
             </v-tooltip>
@@ -32,7 +42,7 @@ const superfanInvite = import.meta.env.VITE_SUPERFAN_INVITE
                             <span>
                                 <div class="info-title">{{ track.name }}</div>
                                 <div class="info-subtitle">{{ track.artists.slice(0, 3).map((artist) =>
-                artist.name).join(", ")
+            artist.name).join(", ")
                                     }}</div>
                             </span>
                         </div>
@@ -73,6 +83,7 @@ export default {
                 }
             },
             showTooltip: false,
+            loading: true,
         };
     },
     mounted() {
@@ -84,8 +95,11 @@ export default {
                 // Fetch Harry Spotify Data
                 const backendUrl = import.meta.env.VITE_DB_HOST
                 const spotifyResponse = await axios.get(`${backendUrl}/spotify_stats`);
-                this.users['Harry'].trackData = spotifyResponse.data['track_data'].items;
-                this.users['Harry'].artistData = spotifyResponse.data['artist_data'].items;
+                this.users['Harry'].trackData = spotifyResponse.data['harry']['track_data'].items;
+                this.users['Harry'].artistData = spotifyResponse.data['harry']['artist_data'].items;
+                this.users['Katie'].trackData = spotifyResponse.data['katie']['track_data'].items;
+                this.users['Katie'].artistData = spotifyResponse.data['katie']['artist_data'].items;
+                this.loading = false;
             } catch (err) {
                 console.error('Error fetching data:', err);
             }
