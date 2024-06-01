@@ -8,7 +8,7 @@ import globalMixin from '@/globalMixin';
       <v-btn class="header-font" plain @click="redirect('/')">{{ displayedTitle }}</v-btn>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn text @click="redirect('/board')">Inspiration Board</v-btn>
+    <v-btn text @click="redirect('/shop')">Shop</v-btn>
     <v-btn text @click="redirect('/about')">About</v-btn>
     <v-btn text v-if="!hasToken" @click="redirect('/login')">Login</v-btn>
     <v-btn text v-if="hasToken" @click="removeToken()">Logout</v-btn>

@@ -1,20 +1,20 @@
 <template>
     <div class="d-flex flex-wrap justify-space-between container">
       <v-sheet class="ma-2 pa-2">
-        <div class="square-container cursor-pointer" @click="redirect('/shop')">
-          <img src="../assets/vintage_supreme.jpeg" alt="Rotating Image" class="circular-image">
-          <div style="text-align: center; padding: 5px">Clothes</div>
+        <div class="square-container cursor-pointer" @click="redirect('/travel')">
+          <img src="../assets/earth.png" alt="Travel" class="circular-image">
+          <div style="text-align: center; padding: 5px">Travel</div>
         </div>
       </v-sheet>
       <v-sheet class="ma-2 pa-2">
         <div class="square-container cursor-pointer" @click="redirect('/music')">
-          <img src="../assets/sade.png" alt="Rotating Image" class="rotate circular-image">
+          <img src="../assets/sade.png" alt="Music" class="rotate circular-image">
           <div style="text-align: center; padding: 5px">Music</div>
         </div>
       </v-sheet>
       <v-sheet class="ma-2 pa-2">
         <div class="square-container cursor-pointer" @click="redirect('/recipes')">
-          <img src="../assets/pan.png" alt="Rotating Image" class="circular-image">
+          <img src="../assets/pan.png" alt="Recipes" class="circular-image">
           <div style="text-align: center; padding: 5px;">Recipes</div>
         </div>
       </v-sheet>
