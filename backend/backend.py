@@ -281,16 +281,23 @@ def fetch_country_documents():
     query = {"country": country}
     documents = travel_collection.find(query)
     
-    if not documents:
-        return jsonify({"error": "invalid country"}), 404
-    
-    document_array = []
-    print("Documents")
+    country_obj = None
     for document in documents:
-        del document['_id']
-        print(document)
-        document_array.append(document)
-    return jsonify({"documents": document_array}), 200
+        country_obj = document
+    
+    if not country_obj:
+        return jsonify({"error": "invalid country"}), 404
+    del country_obj['_id']
+    return jsonify({"data": country_obj}), 200
+
+# Fetch everything from the 'travel' collection in mongoDB that matches the country
+@app.route('/travel/all', methods=['GET'])
+def find_unique_countries():
+    countries = travel_collection.distinct("country")
+    print("Documents")
+    for country in countries:
+        print(country)
+    return jsonify({"countries": countries}), 200
     
 
 if __name__ == '__main__':

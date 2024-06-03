@@ -6,6 +6,7 @@
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import worldData from '../assets/world-110m.json'; // Update the path accordingly
+// import { watch } from 'vue';
 
 export default {
   props: {
@@ -51,10 +52,8 @@ export default {
         .attr('d', path)
         .attr('fill', d => this.visitedCountries.includes(d.properties.name) ? 'green' : 'grey')
         .on('click', d => {
-          // console.log(d.srcElement["__data__"]);
           console.log(d.srcElement["__data__"].properties.name);
           const countryName = d.srcElement["__data__"].properties.name
-          // console.log(d.srcElement.properties);
           if (countryName !== undefined && this.visitedCountries.includes(countryName)) {
             console.log(`taking you to ${countryName}`)
             window.location.href = `/travel/${countryName}`;
@@ -93,6 +92,17 @@ export default {
       svg.call(drag);
       svg.call(zoom);
 
+    },
+    updateGlobe() {
+      console.log("Updated");
+      d3.select(this.$refs.globe)
+      .selectAll('path.country')
+      .attr('fill', d => this.visitedCountries.includes(d.properties.name) ? 'green' : 'grey')
+    }
+  },
+  watch: {
+    visitedCountries: function (newValue, oldValue) {
+      this.updateGlobe();
     }
   }
 };

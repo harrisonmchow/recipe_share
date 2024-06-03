@@ -1,5 +1,6 @@
 <script setup>
 import TravelGlobe from './TravelGlobe.vue';
+import axios from 'axios';
 </script>
 
 <template>
@@ -29,8 +30,25 @@ export default {
   },
   data() {
     return {
-      visitedCountries: ['Indonesia', 'France', 'Australia', 'Spain', 'Portugal', 'United Kingdom']
+      visitedCountries: []
+      // visitedCountries: ['Indonesia', 'France', 'Australia', 'Spain', 'Portugal', 'United Kingdom']
     };
+  },
+  methods: {
+    async fetchVisitedCountries() {
+      try {
+        const backendUrl = import.meta.env.VITE_DB_HOST;
+        const response = await axios.get(`${backendUrl}/travel/all`);
+        const data = response.data;
+        // console.log(data);
+        this.visitedCountries = data.countries;
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  },
+  mounted() {
+    this.fetchVisitedCountries();
   }
 }
 </script>
