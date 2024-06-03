@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      visitedCountries: ['Bali', 'France', 'Australia', 'Spain', 'Portugal', 'United Kingdom']
+      visitedCountries: ['Indonesia', 'France', 'Australia', 'Spain', 'Portugal', 'United Kingdom']
     };
   }
 }

@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from bson import ObjectId, json_util
+from dotenv import load_dotenv
 import json
 import jwt
 import datetime
@@ -9,6 +10,11 @@ from flask_cors import CORS # type: ignore
 import requests
 import os
 import base64
+from google.cloud import storage
+
+
+# Load environment variables from the .env file
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -21,10 +27,13 @@ db = client['recipe_database']  # Connect to your MongoDB database
 # Define your MongoDB collection
 recipes_collection = db['recipes']
 users_collection = db['users']
+travel_collection = db['travel']
 
 curr_spotify_token_harry = ""
 curr_spotify_token_katie = ""
+bucket_name = "app-travel-photos"
 
+google_storage_client = storage.Client.from_service_account_json(os.environ.get('GOOGLE_STORAGE_PATH'))
 
 def token_required(f):
     def decorated_function(*args, **kwargs):
@@ -111,8 +120,8 @@ def get_recipes():
             return json.loads(json_util.dumps(recipe))
 
 # Add a new recipe to database
-@app.route('/recipe', methods=['POST'])
 @token_required
+@app.route('/recipe', methods=['POST'])
 def create_recipe():
     data = request.json
     new_recipe = {
@@ -211,6 +220,78 @@ def get_spotify_stats():
     artist_data_katie = artist_response.json()
     return jsonify({"harry": {"track_data": track_data_harry, "artist_data": artist_data_harry},
                     "katie": {"track_data": track_data_katie, "artist_data": artist_data_katie}}), 200
+
+# Add photos to Google Cloud object storage
+@token_required
+@app.route('/upload_photo', methods=['POST'])
+def get_signed_url():
+    file = request.args.get('file', type=str)
+    country = request.args.get('country', type=str)
+    region = request.args.get('region', type=str)
+    city = request.args.get('city', type=str)
+    if region:
+        name = f"{country}\\{region}\\{city}\\{file}"
+    else:
+        name = f"{country}\\{city}\\{file}"
+        
+    # Create a storage client using the credentials
+    global google_storage_client
+    global bucket_name
+    bucket = google_storage_client.bucket(bucket_name)
+    blob = bucket.blob(name)
+    signed_url = blob.generate_signed_url(
+        version="v4",
+        # This URL is valid for 15 minutes
+        expiration=datetime.timedelta(minutes=10),
+        # Allow PUT requests using this URL.
+        method="PUT",
+        content_type="application/octet-stream",
+    )
+    return jsonify({signed_url}), 200
+
+# Fetch objects (photos) related to the country + region + town
+@app.route('/travel/photos', methods=['GET'])
+def fetch_objects():
+    country = request.args.get('country', type=str)
+    region = request.args.get('region', type=str)
+    city = request.args.get('city', type=str)
+    
+    # Create a storage client using the credentials
+    global google_storage_client
+    global bucket_name
+    if region:
+        prefix = f"{country}_{region}_{city}"
+    else:
+        prefix = f"{country}_{city}"
+    print(f"Prefix = {prefix}")
+    blobs = google_storage_client.list_blobs(bucket_name, prefix=prefix, delimiter='/')
+    photos = []
+    for blob in blobs:
+        photos.append(f"https://storage.cloud.google.com/{bucket_name}/{blob.name}")
+    return jsonify({"photos": photos}), 200
+
+# Fetch everything from the 'travel' collection in mongoDB that matches the country
+@app.route('/travel', methods=['GET'])
+def fetch_country_documents():
+    country = request.args.get('country', type=str)
+    if not country:
+        return jsonify({"error": "invalid country"}), 404
+    
+    # Query the collection
+    query = {"country": country}
+    documents = travel_collection.find(query)
+    
+    if not documents:
+        return jsonify({"error": "invalid country"}), 404
+    
+    document_array = []
+    print("Documents")
+    for document in documents:
+        del document['_id']
+        print(document)
+        document_array.append(document)
+    return jsonify({"documents": document_array}), 200
+    
 
 if __name__ == '__main__':
     app.run(debug=True)

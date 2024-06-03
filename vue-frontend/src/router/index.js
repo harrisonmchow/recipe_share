@@ -8,6 +8,7 @@ import NotFoundView from '../views/404View.vue'
 import NewRecipeView from '@/views/NewRecipeView.vue'
 import MusicView from '@/views/MusicView.vue'
 import TravelView from '@/views/TravelView.vue'
+import CountryView from '@/views/CountryView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,11 @@ const router = createRouter({
       path: '/travel',
       name: 'travel',
       component: TravelView
+    },
+    {
+      path: '/travel/:country',
+      name: 'country',
+      component: CountryView
     },
     {
       path: '/:pathMatch(.*)*',
