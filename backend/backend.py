@@ -290,6 +290,28 @@ def fetch_country_documents():
     del country_obj['_id']
     return jsonify({"data": country_obj}), 200
 
+# Add a document representing a country to the DB
+@token_required
+@app.route('/travel/new', methods=['POST'])
+def new_country():
+    data = request.json
+    # Query the collection to check if a document matching that country is already in the DB
+    query = {"country": data['country']}
+    documents = travel_collection.find(query)
+    for document in documents:
+        return jsonify({'message': 'Country already in database'}), 500
+    
+    guides = []
+    new_document = {
+        'country': data['country'],
+        'description': data['description'],
+        'guides': guides
+    }
+    # Insert the new travel document into the collection
+    travel_collection.insert_one(new_document)
+    return jsonify({'message': 'Country successfully added to database'}), 201
+
+
 # Fetch everything from the 'travel' collection in mongoDB that matches the country
 @app.route('/travel/all', methods=['GET'])
 def find_unique_countries():
