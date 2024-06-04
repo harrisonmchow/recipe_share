@@ -6,7 +6,6 @@
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import worldData from '../assets/world-110m.json'; // Update the path accordingly
-// import { watch } from 'vue';
 
 export default {
   props: {
